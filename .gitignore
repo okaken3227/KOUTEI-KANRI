@@ -1,0 +1,57 @@
+# 環境変数ファイル（本番環境の秘密情報を含む）
+.env
+.env.local
+.env.production
+.env.*.local
+
+# 依存関係
+node_modules/
+*/node_modules/
+
+# ビルド成果物
+frontend/dist/
+backend/dist/
+build/
+*.log
+
+# OS関連
+.DS_Store
+Thumbs.db
+
+# IDE設定
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# SSL証明書とCertbot関連（機密情報）
+certbot/
+*.pem
+*.key
+*.crt
+
+# Docker関連
+docker-compose.override.yml
+
+# データベースバックアップ
+backups/
+*.sql
+*.dump
+
+# ログファイル
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# テスト関連
+coverage/
+.nyc_output/
+
+# 一時ファイル
+*.tmp
+*.temp
+.cache/
+
