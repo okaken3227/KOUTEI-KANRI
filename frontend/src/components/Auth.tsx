@@ -54,6 +54,11 @@ export function Auth() {
 
   return (
     <div className="auth-container">
+      <div className="rice-decoration left-top">🌾</div>
+      <div className="rice-decoration right-top">🌾</div>
+      <div className="rice-decoration left-bottom">🌾</div>
+      <div className="rice-decoration right-bottom">🌾</div>
+      
       <div className="auth-card">
         <div className="auth-header">
           <div className="floating-rice">🌾</div>

@@ -938,7 +938,7 @@ function App() {
           <h1>工程管理くん</h1>
           <div className="header-user-row">
             <div className="user-info">
-              <span className="username">{user?.username}</span>
+              <span className="username">{user?.username}さん</span>
             </div>
             <button onClick={logout} className="logout-btn">
               ログアウト
@@ -1140,27 +1140,6 @@ function App() {
           </div>
         )}
 
-        {/* 自宅設定パネル（サイドバーの外に配置、PC・モバイル両方でフローティングパネル、下に表示） */}
-        {isSettingHome && (
-          <div className="home-setting-floating">
-            <div className="create-panel home-setting-panel">
-              <h3>🏠 自宅の位置を設定</h3>
-              <p className="hint-text">
-                ピンクのピンを自宅に設定したい場所にドラッグして移動してください。<br/>
-                地図上でピンの位置を調整できます。
-              </p>
-              <div className="button-group">
-                <button onClick={saveHome} style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}>
-                  保存
-                </button>
-                <button onClick={cancelSetHome} style={{ backgroundColor: '#999', color: 'white' }}>
-                  キャンセル
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {selectedField && !isCreating && !isSettingHome && (
           <div className="detail-panel">
             <button className="back-btn" onClick={() => {
@@ -1176,14 +1155,6 @@ function App() {
                   <button 
                     onClick={() => setIsEditingField(true)}
                     className="edit-btn"
-                    style={{
-                      padding: '6px 12px',
-                      fontSize: '0.85rem',
-                      backgroundColor: '#f0f0f0',
-                      border: '1px solid #ddd',
-                      borderRadius: '6px',
-                      cursor: 'pointer'
-                    }}
                   >
                     編集
                   </button>
@@ -1196,28 +1167,26 @@ function App() {
               </>
             ) : (
               <>
-                <div style={{ marginBottom: '15px' }}>
-                  <h3 style={{ margin: '0 0 15px 0' }}>田んぼ情報を編集</h3>
-                  <div style={{ marginBottom: '12px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', fontWeight: '600' }}>田んぼの名前</label>
+                <div className="edit-field-form">
+                  <h3>田んぼ情報を編集</h3>
+                  <div className="form-field">
+                    <label>田んぼの名前</label>
                     <input
                       type="text"
                       value={editFieldName}
                       onChange={e => setEditFieldName(e.target.value)}
-                      style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ddd' }}
                     />
                   </div>
-                  <div style={{ marginBottom: '12px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', fontWeight: '600' }}>所有者</label>
+                  <div className="form-field">
+                    <label>所有者</label>
                     <input
                       type="text"
                       value={editFieldOwner}
                       onChange={e => setEditFieldOwner(e.target.value)}
-                      style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ddd' }}
                     />
                   </div>
-                  <div style={{ marginBottom: '15px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem', fontWeight: '600' }}>面積 (a)</label>
+                  <div className="form-field">
+                    <label>面積 (a)</label>
                     <input
                       type="number"
                       value={editFieldArea}
@@ -1225,12 +1194,11 @@ function App() {
                       placeholder="例: 20"
                       min="0"
                       step="1"
-                      style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ddd' }}
                     />
-                    <p className="area-note" style={{ marginTop: '5px' }}>※ 1反 = 10a / 1ha = 100a</p>
+                    <p className="area-note">※ 1反 = 10a / 1ha = 100a</p>
                   </div>
                   <div className="button-group">
-                    <button onClick={handleUpdateField} style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}>
+                    <button onClick={handleUpdateField}>
                       保存
                     </button>
                     <button onClick={() => {
@@ -1238,7 +1206,7 @@ function App() {
                       setEditFieldName(selectedField.name);
                       setEditFieldOwner(selectedField.owner || "");
                       setEditFieldArea(selectedField.area?.toString() || "");
-                    }} style={{ backgroundColor: '#999', color: 'white' }}>
+                    }}>
                       キャンセル
                     </button>
                   </div>
@@ -1250,55 +1218,44 @@ function App() {
 
             <div className="status-actions">
               <h4>作業状況を更新</h4>
-              <div style={{marginBottom: '10px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                  <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                      <label style={{fontSize: '0.9rem', whiteSpace: 'nowrap'}}>作業日: </label>
+              <div className="work-input-container">
+                  <div className="work-date-input-group">
+                      <label>作業日</label>
                       <input 
                         type="date" 
                         value={workDate} 
                         onChange={e => setWorkDate(e.target.value)}
-                        style={{padding: '8px 10px', flex: 1, minWidth: 0}}
                       />
                   </div>
-                  <div className="worker-input-group" style={{display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#f9f9f9', padding: '10px 12px', borderRadius: '8px'}}>
-                      <label style={{fontSize: '0.9rem', whiteSpace: 'nowrap'}}>作業者名: </label>
+                  <div className="worker-input-group">
+                      <label>作業者名</label>
                       <input 
                         type="text" 
                         value={workerName} 
                         onChange={e => setWorkerName(e.target.value)}
                         placeholder="例: 山田太郎"
-                        style={{padding: '8px 10px', flex: 1, minWidth: 0, border: '1px solid #ddd', borderRadius: '6px'}}
                       />
                   </div>
               </div>
-              <div className="status-buttons">
-                {STATUS_LIST.map((status) => (
-                  <button 
-                    key={status} 
-                    className={selectedStatus === status ? 'selected' : ''}
-                    style={{backgroundColor: STATUS_COLORS[status], color: 'white'}}
-                    onClick={() => handleStatusChange(status)}
-                  >
-                    {status}
-                  </button>
-                ))}
+              <div className="form-field" style={{marginTop: '12px'}}>
+                <label style={{display: 'block', marginBottom: '8px', fontSize: '1.05rem', fontWeight: '700', color: '#6B8E23'}}>作業内容</label>
+                <div className="status-buttons">
+                  {STATUS_LIST.map((status) => (
+                    <button 
+                      key={status} 
+                      className={selectedStatus === status ? 'selected' : ''}
+                      style={{backgroundColor: STATUS_COLORS[status], color: 'white', fontSize: '0.95rem', padding: '10px 8px'}}
+                      onClick={() => handleStatusChange(status)}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
               </div>
               <button 
                 onClick={handleUpdateStatus}
                 disabled={!selectedStatus}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  marginTop: '10px',
-                  backgroundColor: 'var(--primary-color)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: selectedStatus ? 'pointer' : 'not-allowed',
-                  opacity: selectedStatus ? 1 : 0.5,
-                  fontSize: '1rem',
-                  fontWeight: 'bold'
-                }}
+                className="update-status-btn"
               >
                 更新
               </button>
@@ -1310,28 +1267,28 @@ function App() {
                 {records.map(record => (
                   <li key={record.id} className={`history-item field-list-item ${editingRecordId === record.id ? 'editing' : ''}`}>
                     {editingRecordId === record.id ? (
-                      <div className="history-edit-form" style={{width: '100%'}}>
-                        <div style={{marginBottom: '10px'}}>
-                          <label style={{display: 'block', marginBottom: '5px', fontSize: '0.85rem', fontWeight: '600'}}>作業日</label>
-                          <input
-                            type="date"
-                            value={editRecordDate}
-                            onChange={e => setEditRecordDate(e.target.value)}
-                            style={{width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ddd', boxSizing: 'border-box'}}
-                          />
+                      <div className="history-edit-form">
+                        <div className="work-input-container">
+                          <div className="work-date-input-group">
+                            <label>作業日</label>
+                            <input
+                              type="date"
+                              value={editRecordDate}
+                              onChange={e => setEditRecordDate(e.target.value)}
+                            />
+                          </div>
+                          <div className="worker-input-group">
+                            <label>作業者名</label>
+                            <input
+                              type="text"
+                              value={editRecordWorker}
+                              onChange={e => setEditRecordWorker(e.target.value)}
+                              placeholder="例: 山田太郎"
+                            />
+                          </div>
                         </div>
-                        <div className="worker-input-group" style={{marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#f9f9f9', padding: '10px 12px', borderRadius: '8px', boxSizing: 'border-box', minWidth: 0, width: '100%'}}>
-                          <label style={{fontSize: '0.85rem', whiteSpace: 'nowrap'}}>作業者名: </label>
-                          <input
-                            type="text"
-                            value={editRecordWorker}
-                            onChange={e => setEditRecordWorker(e.target.value)}
-                            placeholder="例: 山田太郎"
-                            style={{padding: '8px', flex: 1, minWidth: 0, maxWidth: '100%', border: '1px solid #ddd', borderRadius: '6px', boxSizing: 'border-box'}}
-                          />
-                        </div>
-                        <div style={{marginBottom: '10px'}}>
-                          <label style={{display: 'block', marginBottom: '5px', fontSize: '0.85rem', fontWeight: '600'}}>作業内容</label>
+                        <div className="form-field" style={{marginTop: '12px'}}>
+                          <label style={{display: 'block', marginBottom: '8px', fontSize: '0.95rem', fontWeight: '700', color: '#6B8E23'}}>作業内容</label>
                           <div className="status-buttons">
                             {STATUS_LIST.map((status) => (
                               <button
@@ -1345,17 +1302,11 @@ function App() {
                             ))}
                           </div>
                         </div>
-                        <div style={{display: 'flex', gap: '8px', marginTop: '10px'}}>
-                          <button
-                            onClick={handleUpdateRecord}
-                            style={{flex: 1, padding: '8px', backgroundColor: 'var(--primary-color)', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem'}}
-                          >
+                        <div className="button-group history-edit-buttons">
+                          <button onClick={handleUpdateRecord}>
                             更新
                           </button>
-                          <button
-                            onClick={handleCancelEditRecord}
-                            style={{flex: 1, padding: '8px', backgroundColor: '#999', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '0.9rem'}}
-                          >
+                          <button onClick={handleCancelEditRecord}>
                             キャンセル
                           </button>
                         </div>
@@ -1412,37 +1363,37 @@ function App() {
             <p style={{ fontSize: '0.9rem', color: '#666', marginTop: '10px' }}>
               関連する作業履歴もすべて削除されます。
             </p>
-            <div className="button-group" style={{ marginTop: '20px', display: 'flex', gap: '12px' }}>
+            <div className="button-group modal-button-group">
               <button 
                 onClick={handleDeleteFieldConfirm}
-                style={{ 
-                  flex: 1, 
-                  backgroundColor: '#ff6b6b', 
-                  color: 'white',
-                  padding: '12px 16px',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer'
-                }}
+                className="modal-delete-btn"
               >
                 削除する
               </button>
               <button 
                 onClick={() => setShowDeleteConfirm(false)}
-                style={{ 
-                  flex: 1, 
-                  backgroundColor: '#999', 
-                  color: 'white',
-                  padding: '12px 16px',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer'
-                }}
               >
+                キャンセル
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 自宅設定パネル（サイドバーの外に配置、PC・モバイル両方でフローティングパネル、下に表示） */}
+      {isSettingHome && (
+        <div className="home-setting-floating">
+          <div className="create-panel home-setting-panel">
+            <h3>🏠 自宅の位置を設定</h3>
+            <p className="hint-text">
+              ピンクのピンを自宅に設定したい場所にドラッグして移動してください。<br/>
+              地図上でピンの位置を調整できます。
+            </p>
+            <div className="button-group">
+              <button onClick={saveHome}>
+                保存
+              </button>
+              <button onClick={cancelSetHome}>
                 キャンセル
               </button>
             </div>
@@ -1456,36 +1407,15 @@ function App() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>本当に削除しますか？</h3>
             <p>「{new Date(recordToDelete.date).toLocaleDateString()} - {recordToDelete.workType}」の作業履歴を削除しますか？</p>
-            <div className="button-group" style={{ marginTop: '20px', display: 'flex', gap: '12px' }}>
+            <div className="button-group modal-button-group">
               <button 
                 onClick={handleDeleteRecordConfirm}
-                style={{ 
-                  flex: 1, 
-                  backgroundColor: '#ff6b6b', 
-                  color: 'white',
-                  padding: '12px 16px',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer'
-                }}
+                className="modal-delete-btn"
               >
                 削除する
               </button>
               <button 
                 onClick={() => setRecordToDelete(null)}
-                style={{ 
-                  flex: 1, 
-                  backgroundColor: '#999', 
-                  color: 'white',
-                  padding: '12px 16px',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  cursor: 'pointer'
-                }}
               >
                 キャンセル
               </button>
