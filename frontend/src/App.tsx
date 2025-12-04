@@ -1505,7 +1505,6 @@ function App() {
                 }}
                 eventHandlers={{
                   click: (e) => {
-                    LeafletMouseEvent;
                     e.originalEvent.stopPropagation();
                     if (!isCreating && !isSettingHome) handleSelectField(field);
                   }
