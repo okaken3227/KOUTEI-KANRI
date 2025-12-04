@@ -56,6 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('nouka_map_token', data.token);
       localStorage.setItem('nouka_map_user', JSON.stringify(data.user));
     } catch (error: any) {
+      // ネットワークエラーの場合
+      if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+        throw new Error('サーバーに接続できません。ネットワーク接続を確認してください。');
+      }
       throw error;
     }
   };
@@ -79,6 +83,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('nouka_map_token', data.token);
       localStorage.setItem('nouka_map_user', JSON.stringify(data.user));
     } catch (error: any) {
+      // ネットワークエラーの場合
+      if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+        throw new Error('サーバーに接続できません。ネットワーク接続を確認してください。');
+      }
       throw error;
     }
   };
