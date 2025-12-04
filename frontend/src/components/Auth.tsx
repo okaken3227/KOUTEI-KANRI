@@ -4,11 +4,28 @@ import './Auth.css';
 
 // 全角を半角に変換する関数
 const toHalfWidth = (str: string): string => {
-  return str.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-    .replace(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-    .replace(/[！＂＃＄％＆＇（）＊＋，－．／：；＜＝＞？＠［＼］＾＿｀｛｜｝～]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-    .replace(/　/g, ' ')
-    .replace(/[ー−]/g, '-');
+  // 全角数字を半角に変換（より確実な方法）
+  const fullWidthNumbers = '０１２３４５６７８９';
+  const halfWidthNumbers = '0123456789';
+  
+  let result = str;
+  for (let i = 0; i < fullWidthNumbers.length; i++) {
+    result = result.replace(new RegExp(fullWidthNumbers[i], 'g'), halfWidthNumbers[i]);
+  }
+  
+  // 全角英字を半角に変換
+  result = result.replace(/[Ａ-Ｚａ-ｚ]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+  
+  // 全角記号を半角に変換
+  result = result.replace(/[！＂＃＄％＆＇（）＊＋，－．／：；＜＝＞？＠［＼］＾＿｀｛｜｝～]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+  
+  // 全角スペースを半角に変換
+  result = result.replace(/　/g, ' ');
+  
+  // 長音記号をハイフンに変換
+  result = result.replace(/[ー−]/g, '-');
+  
+  return result;
 };
 
 export function Auth() {
