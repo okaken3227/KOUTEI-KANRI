@@ -261,62 +261,98 @@ docker compose -f docker-compose.prod.yml logs -f
 
 HTTPSでアクセスできるようにSSL証明書を取得します（無料）。
 
-### ステップ1: DNS設定の確認
+### 方法1: 自動スクリプトで一括セットアップ（推奨・簡単！）
+
+**koutei-kanrikun.net の場合:**
+
+```bash
+# スクリプトに実行権限を付与
+chmod +x setup-https.sh
+
+# ワンコマンドで HTTPS化を完了
+./setup-https.sh
+```
+
+プロンプトに従って入力:
+- **メールアドレス**: your-email@example.com
+- **確認**: y
+
+このスクリプトが以下をすべて自動で実行します:
+- ✅ 必要なディレクトリ作成
+- ✅ Dockerサービス起動
+- ✅ フロントエンドビルド
+- ✅ SSL証明書取得
+- ✅ HTTPS設定の有効化
+- ✅ 自動更新の設定
+
+完了後、すぐに `https://koutei-kanrikun.net` でアクセス可能になります！
+
+---
+
+### 方法2: 手動セットアップ（詳細な制御が必要な場合）
+
+#### ステップ1: DNS設定の確認
 
 まず、ドメインが正しくサーバーを指しているか確認:
 
 ```bash
-# 別のPCまたはスマホで確認
-nslookup your-domain.com
+# DNS設定を確認
+nslookup koutei-kanrikun.net
+# 160.251.185.118 が返ってくることを確認
 ```
 
 IPアドレスがConoHa VPSのIPと一致していればOK！
 
-### ステップ2: SSL証明書の取得
+#### ステップ2: SSL証明書の取得
 
 ```bash
-# スクリプトに実行権限を付与
-chmod +x init-letsencrypt.sh
+# certbotディレクトリを作成
+mkdir -p certbot/conf certbot/www
 
-# スクリプトを実行
-./init-letsencrypt.sh
+# Nginxを起動（HTTP のみ）
+docker compose -f docker-compose.prod.yml up -d nginx
+
+# SSL証明書を取得
+docker compose -f docker-compose.prod.yml run --rm certbot certonly \
+    --webroot \
+    --webroot-path=/var/www/certbot \
+    -d koutei-kanrikun.net \
+    -d www.koutei-kanrikun.net \
+    --email your-email@example.com \
+    --agree-tos \
+    --no-eff-email
 ```
 
-プロンプトに従って入力:
-- **ドメイン名**: your-domain.com
-- **メールアドレス**: your-email@example.com
-- **テスト環境で実行**: n（本番環境）
+#### ステップ3: Nginxを再起動
 
-### ステップ3: Nginx設定の更新
-
-証明書取得後、HTTPS設定を有効化:
+nginx設定はすでにHTTPS対応になっているので、再起動するだけ:
 
 ```bash
-nano nginx/conf.d/default.conf
-```
-
-以下の変更を行う:
-
-1. **HTTPSサーバーブロックのコメントを解除**
-   - `# server {` の`#`を削除
-   - `# }` までのすべての`#`を削除
-
-2. **HTTPリダイレクトを有効化**
-   - HTTPサーバーブロックの中で:
-   ```nginx
-   # location / {
-   #     return 301 https://$server_name$request_uri;
-   # }
-   ```
-   のコメントを解除
-
-3. HTTPサーバーブロックの一時的なフロントエンド表示部分を削除またはコメントアウト
-
-### ステップ4: Nginxを再起動
-
-```bash
+# Nginxを再起動してHTTPS設定を適用
 docker compose -f docker-compose.prod.yml restart nginx
+
+# 自動更新サービスを起動
+docker compose -f docker-compose.prod.yml up -d certbot
 ```
+
+---
+
+### トラブルシューティング
+
+**証明書取得に失敗した場合:**
+
+```bash
+# ログを確認
+docker compose -f docker-compose.prod.yml logs certbot
+
+# DNS設定を再確認
+nslookup koutei-kanrikun.net
+
+# ファイアウォール設定を確認
+sudo ufw status
+```
+
+詳細なトラブルシューティングは `HTTPS化クイックガイド.md` を参照してください。
 
 ---
 
